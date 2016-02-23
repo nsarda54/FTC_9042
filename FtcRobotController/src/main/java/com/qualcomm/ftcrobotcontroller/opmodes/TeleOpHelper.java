@@ -2,6 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.BuildConfig;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -28,7 +29,7 @@ public class TeleOpHelper extends OpMode {
 
     //zipline servo
     Servo zipLiner,
-          dropClimber;
+            dropClimber;
 
     TouchSensor backBumper;
 
@@ -87,9 +88,10 @@ public class TeleOpHelper extends OpMode {
 
         backBumper = hardwareMap.touchSensor.get("bumper");
 
-
         setDirection();
         resetEncoders();
+        dropClimber(false);
+        setZipLinePosition(0);
     }
 
 
@@ -160,7 +162,7 @@ public class TeleOpHelper extends OpMode {
         double rightPower = -gamepad1.right_stick_y;
         double leftPower = -gamepad1.left_stick_y;
 
-        setMotorPower(.3*rightPower, .3*leftPower);
+        setMotorPower(.7*rightPower, .7*leftPower);
 
     }
 
@@ -194,30 +196,10 @@ public class TeleOpHelper extends OpMode {
 
     public void dropClimber(boolean dump) {
         if (dump) {
-            dropClimber.setPosition(.5);
+            dropClimber.setPosition(.57);
         }
         else if (!dump){
             dropClimber.setPosition(0);
-        }
-    }
-
-    public boolean alternatePropeller(boolean on){
-        propeller.setTargetPosition(propellerTargetPos);
-        propeller.setPower(.7);
-        if (on){
-            if (propeller.getCurrentPosition()-PROPELLER_RIGHT<=0){
-                propellerTargetPos=PROPELLER_LEFT;
-            }
-            else if (propeller.getCurrentPosition()-PROPELLER_LEFT>=0){
-                propellerTargetPos=PROPELLER_RIGHT;
-            }
-            return true;
-        }
-
-        else{
-            propeller.setPower(0);
-            resetPropellerEncoder();
-            return false;
         }
     }
 
@@ -231,17 +213,11 @@ public class TeleOpHelper extends OpMode {
             propeller.setTargetPosition(targetPos);
             propeller.setPower(.2);
             if (targetPos - currentPos <= 2) {
-                resetPropellerEncoder();
                 propeller.setPower(0);
                 turn = 1;
                 return true;
             } else return false;
         } else return false;
-    }
-
-    public void resetPropellerEncoder(){
-        propeller.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        propeller.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
     }
 
     public boolean setZipLinePosition(double pos) {//slider values
@@ -281,9 +257,13 @@ public class TeleOpHelper extends OpMode {
     public void basicTel() {
         telemetry.addData("01 frontLeftPos: ", frontLeft.getCurrentPosition());
         telemetry.addData("02 backLeftPos: ", backLeft.getCurrentPosition());
+        telemetry.addData("03a Back Left Power ", backLeft.getPower());
+        telemetry.addData("03b Front Left Power ", frontLeft.getPower());
 
         telemetry.addData("04 frontRightPos: ", frontRight.getCurrentPosition());
         telemetry.addData("05 backRightPos: ", backRight.getCurrentPosition());
+        telemetry.addData("06a Back Right Power ", backRight.getPower());
+        telemetry.addData("06b Front Right Power ", frontRight.getPower());
 
         telemetry.addData("07 ArmMotor1: ", armMotor1.getCurrentPosition());
         telemetry.addData("08 ArmMotor2: ", armMotor2.getCurrentPosition());
@@ -293,8 +273,6 @@ public class TeleOpHelper extends OpMode {
         telemetry.addData("11 Dump position",dropClimber.getPosition());
         telemetry.addData("12 Pivot Arm Power: ", armPivot.getPower());
         telemetry.addData("13 Back Bumper Pushed is ", backBumper.getValue());
-
-
 
     }
 
