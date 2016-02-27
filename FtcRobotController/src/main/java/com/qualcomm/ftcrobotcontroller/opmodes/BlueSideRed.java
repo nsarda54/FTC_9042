@@ -44,6 +44,7 @@ public class BlueSideRed extends AutonHelper{
         switch(rs) {
             case RESET_STATE:
             {
+                on = true;
                 setZipLinePosition(0);
                 resetEncoders();
                 rs=RunState.FIRST_STATE;
@@ -64,7 +65,7 @@ public class BlueSideRed extends AutonHelper{
                 break;
             }
             case SECOND_STATE: {
-                if (setTargetValueTurn(90)){
+                if (setTargetValueTurn(70)){
                     rs = RunState.SECOND_RESET;
                 }
                 break;
@@ -77,7 +78,7 @@ public class BlueSideRed extends AutonHelper{
                 break;
             }
             case THIRD_STATE: {
-                if (runStraight(-44, false)) {
+                if (runStraight(-36, false)) {
                     rs = RunState.THIRD_RESET;
                 }
                 break;
@@ -90,7 +91,7 @@ public class BlueSideRed extends AutonHelper{
                 break;
             }
             case FOURTH_STATE: {
-                if (setTargetValueTurn(135)){
+                if (setTargetValueTurn(140)){
                     rs=RunState.FOURTH_RESET;
                 }
                 break;
@@ -104,7 +105,7 @@ public class BlueSideRed extends AutonHelper{
             }
             case FIFTH_STATE:
             {
-                if (runStraight(-15, false)){
+                if (runStraight(-5, false)){
                     rs=RunState.FIFTH_RESET;
                 }
                 break;
@@ -121,11 +122,13 @@ public class BlueSideRed extends AutonHelper{
             {
                 if (resetProp()){
                     rs=RunState.SIXTH_STATE;
+                    propeller.setPower(0);
                 }
                 break;
             }
             case SIXTH_STATE: {
-                if (runStraight(-50, false)) {
+                propeller.setPower(0);
+                if (runStraight(-40, false)) {
                     rs = RunState.LAST_STATE;
                 }
                 break;

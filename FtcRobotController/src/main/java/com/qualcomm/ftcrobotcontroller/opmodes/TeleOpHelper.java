@@ -162,7 +162,7 @@ public class TeleOpHelper extends OpMode {
         double rightPower = -gamepad1.right_stick_y;
         double leftPower = -gamepad1.left_stick_y;
 
-        setMotorPower(.7*rightPower, .7*leftPower);
+        setMotorPower(.7 * rightPower, .7 * leftPower);
 
     }
 
@@ -230,6 +230,24 @@ public class TeleOpHelper extends OpMode {
         }
         telemetry.addData("00 Zipline moving at: ", pos);
         return true;
+    }
+
+    public boolean driveDropClimber(boolean stop){
+        if (!stop){
+            if (!backBumper.isPressed()){
+                setMotorPower(.2,.2);
+            }
+            else{
+                setMotorPower(0,0);
+                dropClimber(true);
+                return false;
+            }
+            return true;
+        }
+        else{
+            setMotorPower(0,0);
+            return false;
+        }
     }
 
     public void setArmPivot(double power) {

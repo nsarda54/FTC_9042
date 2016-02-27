@@ -313,12 +313,17 @@ public class AutonHelper extends OpMode {
     //Propeller Manipulation
     public void alternatePropeller(boolean on){
         propeller.setTargetPosition(propellerTargetPos);
-        propeller.setPower(1);
+        propeller.setPower(.8);
         if (on) {
             if (propeller.getCurrentPosition() - PROPELLER_RIGHT <= 8) {
                 propellerTargetPos = PROPELLER_LEFT;
             } else if (propeller.getCurrentPosition() - PROPELLER_LEFT >= -8) {
                 propellerTargetPos = PROPELLER_RIGHT;
+            }
+        }
+        else{
+            if (propeller.getMode()!= DcMotorController.RunMode.RUN_WITHOUT_ENCODERS){
+                propeller.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
             }
         }
     }
@@ -334,42 +339,19 @@ public class AutonHelper extends OpMode {
         }
     }
 
-    public void isPropellerStuck(){
-        if (elapsedTime()<=5){
-            propellerPos = Math.abs(propeller.getCurrentPosition());
-        }
-        if (elapsedTime()>=10 && Math.abs(propeller.getCurrentPosition())-propellerPos<=5){
-            resetStartTime();
-            if (propeller.getTargetPosition()==PROPELLER_LEFT){
-                propeller.setTargetPosition(PROPELLER_RIGHT);
-            }
-            else if (propeller.getTargetPosition()==PROPELLER_RIGHT){
-                propeller.setTargetPosition(PROPELLER_LEFT);
-            }
-        }
-        else{
-            resetStartTime();
-        }
-    }
-
     public boolean resetProp(){
-        propeller.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        int currentPos = propeller.getCurrentPosition();
-        if (targetPos==0) {
-            targetPos = currentPos + (280 - (currentPos % 280));
-        }
-        propeller.setTargetPosition(targetPos);
-        propeller.setPower(.2);
-        if (targetPos - currentPos <= 2) {
-            propeller.setPower(0);
-            resetPropellerEncoder();
-            return true;
-        } else return false;
-    }
 
-    public void resetPropellerEncoder(){
-        propeller.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        propeller.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        if (propeller.getMode()!= DcMotorController.RunMode.RUN_TO_POSITION) {
+            propeller.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        }
+        if (Math.abs(propeller.getCurrentPosition()) <= 2) {
+            propeller.setPower(0);
+            propeller.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            return true;
+        }
+        propeller.setTargetPosition(0);
+        propeller.setPower(.05);
+        return false;
     }
 
     public boolean setZipLinePosition(double pos) {//slider values
@@ -452,6 +434,7 @@ public class AutonHelper extends OpMode {
     public void stop() {
         setMotorPower(0, 0);//brake the movement of drive
         setZipLinePosition(0);
+        spinPropeller(0);
     }
 
 }

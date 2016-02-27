@@ -18,17 +18,22 @@ public class MainTeleOp extends TeleOpHelper {
         else if (gamepad1.left_bumper){
             backDrive();
         }
+        else if (gamepad1.dpad_right && driveDropClimber(true)){
+            driveDropClimber(true);
+        }
+        else if (gamepad1.dpad_left){
+            driveDropClimber(false);
+        }
         else {
             manualDrive(false);
         }
 
         //constant driving
         if (gamepad1.a) {
-            setMotorPower(-.2, -.2);
+            setMotorPower(1, 1);
         }
         else if (gamepad1.y) {
-//            setMotorPower(-.2, -1);
-            setMotorPower(.2 , .2);
+            setMotorPower(-1 , -1);
         }
 
         //propeller
@@ -51,9 +56,6 @@ public class MainTeleOp extends TeleOpHelper {
         }
         else if (gamepad1.dpad_down){
             dropClimber(false);
-        }
-        else if (gamepad1.dpad_left){
-            dropClimber.setPosition(.4);
         }
 
 
