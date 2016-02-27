@@ -17,8 +17,9 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("Blue Alliance Blue Mountain", BlueSideBlue.class);
         manager.register("Blue Alliance Red Mountain", BlueSideRed.class);
         manager.register("Blue Climbers", ShelterDumper.class);
+        manager.register("Blue Climbers Safe Mode", ShelterDumperWithTouch.class);
         manager.register("Red Climbers", ShelterDumperRed.class);
+        manager.register("Red Climbers Safe Mode", ShelterDumperRedWithTouch.class);
         manager.register("Floor Goal", FloorZone.class);
-        manager.register("Floor Goal (10 second Delay)", FloorZoneDelay.class);
     }
 }

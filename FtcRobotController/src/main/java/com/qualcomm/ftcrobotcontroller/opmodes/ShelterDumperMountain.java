@@ -5,7 +5,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
  */
 //STARTING POSITION = Middle on crack of 2 Mats from side non mountain corner
 
-public class ShelterDumperRed extends AutonHelper{
+public class ShelterDumperMountain extends AutonHelper{
 
 
     //establish run states for auton
@@ -24,25 +24,37 @@ public class ShelterDumperRed extends AutonHelper{
         SIXTH_STATE,
         SIXTH_RESET,
         SEVENTH_STATE,
+        SEVENTH_RESET,
+        EIGHT_STATE,
+        EIGHT_RESET,
+        NINTH_STATE,
+        NINTH_RESET,
+        TENTH_STATE,
+        TENTH_RESET,
+        ELEVENTH_STATE,
+        ELEVENTH_RESET,
+        UP_THE_MOUNTAIN,
         LAST_STATE,
         RESET_PROP
     }
 
 
     private RunState rs = RunState.RESET_STATE;
-    public ShelterDumperRed() {}
+
+    public ShelterDumperMountain() {}
 
 
     @Override
     public void loop() {
+
+        telemetry.addData("Current Runstate", rs);
         telemetry.addData("Alternating Propeller is ", on);
         telemetry.addData("Propeller Target Position is ", propellerTargetPos);
-        telemetry.addData("Current Runstate", rs);
 
         basicTel();
         propellerSetToEncoderMode();
-        alternatePropeller(on);
         setToEncoderMode();
+        alternatePropeller(on);
 
         switch(rs) {
             case RESET_STATE: {
@@ -67,7 +79,7 @@ public class ShelterDumperRed extends AutonHelper{
                 break;
             }
             case SECOND_STATE: {
-                if (setTargetValueTurn(-60)) {
+                if (setTargetValueTurn(65)) {
                     rs = RunState.SECOND_RESET;
                 }
                 break;
@@ -79,7 +91,7 @@ public class ShelterDumperRed extends AutonHelper{
                 break;
             }
             case THIRD_STATE: {
-                if (runStraight(-78, false)) {
+                if (runStraight(-80, false)) {
                     rs = RunState.THIRD_RESET;
                 }
                 break;
@@ -94,7 +106,7 @@ public class ShelterDumperRed extends AutonHelper{
             case FOURTH_STATE:
             {
                 //330 worked for longer turn
-                if (setTargetValueTurnRight(210)){
+                if (setTargetValueTurn(-190)){
                     rs = RunState.FOURTH_RESET;
                 }
                 break;
@@ -108,27 +120,108 @@ public class ShelterDumperRed extends AutonHelper{
             }
             case FIFTH_STATE:
             {
-                on = false;
-                spinPropeller(0);
-                if (runStraight(3, false) || backBumper.isPressed()){
+                if(runStraight(15, false) || backBumper.isPressed()){
                     rs = RunState.FIFTH_RESET;
                 }
                 break;
+
             }
+
             case FIFTH_RESET:
             {
                 if (resetEncoders()){
                     rs = RunState.SIXTH_STATE;
                 }
+
                 break;
+
             }
             case SIXTH_STATE:
             {
                 dropClimber(true);
-                rs = RunState.LAST_STATE;
+                rs = RunState.SEVENTH_STATE;
                 break;
             }
-
+            case SEVENTH_STATE:
+            {
+                if (runStraight(-10,false)) {
+                    rs = RunState.SEVENTH_RESET;
+                }
+                break;
+            }
+            case SEVENTH_RESET:
+            {
+                if (resetEncoders()) {
+                    rs = RunState.EIGHT_STATE;
+                }
+                break;
+            }
+            case EIGHT_STATE:{
+                if (setTargetValueTurn(-90)){
+                    rs = RunState.EIGHT_RESET;
+                }
+                break;
+            }
+            case EIGHT_RESET:{
+                if (resetEncoders()){
+                    rs = RunState.NINTH_STATE;
+                }
+                break;
+            }
+            case NINTH_STATE:{
+                if (runStraight(-24,false)){
+                    rs = RunState.NINTH_RESET;
+                }
+                break;
+            }
+            case NINTH_RESET:{
+                if (resetEncoders()){
+                    rs = RunState.TENTH_STATE;
+                }
+                break;
+            }
+            case TENTH_STATE:{
+                if (setTargetValueTurn(-145)){
+                    rs = RunState.TENTH_RESET;
+                }
+                break;
+            }
+            case TENTH_RESET:{
+                if (resetEncoders()){
+                    rs = RunState.ELEVENTH_STATE;
+                }
+                break;
+            }
+            case ELEVENTH_STATE:
+            {
+                if (runStraight(-15, false)){
+                    rs = RunState.ELEVENTH_RESET;
+                    on = false;
+                }
+            }
+            case ELEVENTH_RESET:
+            {
+                if (resetEncoders()){
+                    rs = RunState.RESET_PROP;
+                }
+                break;
+            }
+            case RESET_PROP:
+            {
+                if (resetProp()){
+                    propeller.setPower(0);
+                    rs=RunState.UP_THE_MOUNTAIN;
+                }
+                break;
+            }
+            case UP_THE_MOUNTAIN:
+            {
+                propeller.setPower(0);
+                if (runStraight(-40, false)){
+                    rs= RunState.LAST_STATE;
+                }
+                break;
+            }
             case LAST_STATE: {
                 stop();
             }

@@ -43,7 +43,7 @@ public class TeleOpHelper extends OpMode {
     private final double MOTOR_MAX = 1,
             MOTOR_MIN = -1;
 
-
+    protected String driveType = "normal";
 
     //ENCODER CONSTANTS
     private final double CIRCUMFERENCE_INCHES = 4 * Math.PI,
@@ -59,6 +59,7 @@ public class TeleOpHelper extends OpMode {
             PROPELLER_LEFT = 140;
 
     private int propellerTargetPos = PROPELLER_RIGHT;
+    protected boolean reset = false;
 
     public TeleOpHelper() {
 
@@ -130,7 +131,6 @@ public class TeleOpHelper extends OpMode {
                 (backLeft.getCurrentPosition() == 0) &&
                 (frontRight.getCurrentPosition() == 0) &&
                 (backRight.getCurrentPosition() == 0));
-
     }
 
     public void setToWOEncoderMode() {
@@ -162,8 +162,23 @@ public class TeleOpHelper extends OpMode {
         double rightPower = -gamepad1.right_stick_y;
         double leftPower = -gamepad1.left_stick_y;
 
-        setMotorPower(.7 * rightPower, .7 * leftPower);
+        setMotorPower(.8 * rightPower, .8 * leftPower);
 
+    }
+
+    public void driveControl(String driveType){
+        if (driveType.equals("normal")){
+            manualDrive(false);
+        }
+        else if (driveType.equals("slow")){
+            manualDrive(true);
+        }
+        else if (driveType.equals("climber")){
+            driveDropClimber(true);
+        }
+        else if (driveType.equals("backwards")){
+            backDrive();
+        }
     }
 
     public void setMotorPower(double leftPower, double rightPower) {
@@ -181,9 +196,9 @@ public class TeleOpHelper extends OpMode {
     //MANUAL MOVEMENT (OPERATING)
     public void spinPropeller(int direction) {
         if (direction == 1) {
-            propeller.setPower(1);
+            propeller.setPower(.8);
         } else if (direction == -1) {
-            propeller.setPower(-1);
+            propeller.setPower(-.8);
         } else if (direction == 0) {
             propeller.setPower(0);
         }
@@ -203,22 +218,26 @@ public class TeleOpHelper extends OpMode {
         }
     }
 
-    public boolean resetProp(){
-        propeller.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        int currentPos = propeller.getCurrentPosition();
-        if (turn==0) {
-            if (targetPos==0) {
-                targetPos = currentPos + (280-(currentPos % 280));
-            }
-            propeller.setTargetPosition(targetPos);
-            propeller.setPower(.2);
-            if (targetPos - currentPos <= 2) {
-                propeller.setPower(0);
-                turn = 1;
-                return true;
+    public boolean resetProp(boolean reset) {
+        if (reset) {
+            propeller.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            int currentPos = propeller.getCurrentPosition();
+            if (turn == 0) {
+                if (targetPos == 0) {
+                    targetPos = currentPos + (280 - (currentPos % 280));
+                }
+                propeller.setTargetPosition(targetPos);
+                propeller.setPower(.2);
+                if (targetPos - currentPos <= 2) {
+                    propeller.setPower(0);
+                    turn = 1;
+                    return true;
+                } else return false;
             } else return false;
-        } else return false;
+        }
+        return false;
     }
+
 
     public boolean setZipLinePosition(double pos) {//slider values
         if (pos == 1) {
@@ -306,6 +325,7 @@ public class TeleOpHelper extends OpMode {
         setArmPivot(0);//brake the arm pivot
         setZipLinePosition(0);
         spinPropeller(0);
+        dropClimber(false);
 
     }
 

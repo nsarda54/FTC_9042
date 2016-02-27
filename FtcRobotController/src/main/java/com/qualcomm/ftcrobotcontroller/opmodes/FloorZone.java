@@ -11,6 +11,7 @@ public class FloorZone extends AutonHelper{
     //establish run states for auton
     enum RunState{
         RESET_STATE,
+        DELAY_STATE,
         FIRST_STATE,
         LAST_STATE
     }
@@ -35,14 +36,21 @@ public class FloorZone extends AutonHelper{
             {
                 setZipLinePosition(0);
                 if (resetEncoders()){
-                    rs= RunState.FIRST_STATE;
+                    rs= RunState.DELAY_STATE;
+                }
+                break;
+            }
+            case DELAY_STATE:
+            {
+                if (time>=7){
+                    rs = RunState.FIRST_STATE;
                 }
                 break;
             }
             case FIRST_STATE:
             {
                 on = true;
-                if (runStraight(-99,false)) {
+                if (runStraight(-100,false)) {
                     rs = RunState.LAST_STATE;
                 }
                 break;

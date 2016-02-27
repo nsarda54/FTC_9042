@@ -3,14 +3,10 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import android.hardware.Sensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -435,6 +431,7 @@ public class AutonHelper extends OpMode {
         setMotorPower(0, 0);//brake the movement of drive
         setZipLinePosition(0);
         spinPropeller(0);
+        dropClimber(false);
     }
 
 }

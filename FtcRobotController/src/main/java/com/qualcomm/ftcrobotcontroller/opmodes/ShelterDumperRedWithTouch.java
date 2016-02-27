@@ -5,7 +5,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
  */
 //STARTING POSITION = Middle on crack of 2 Mats from side non mountain corner
 
-public class BlueSideBlue extends AutonHelper{
+public class ShelterDumperRedWithTouch extends AutonHelper{
 
 
     //establish run states for auton
@@ -30,117 +30,108 @@ public class BlueSideBlue extends AutonHelper{
 
 
     private RunState rs = RunState.RESET_STATE;
-
-    public BlueSideBlue() {}
+    public ShelterDumperRedWithTouch() {}
 
 
     @Override
     public void loop() {
+        telemetry.addData("Alternating Propeller is ", on);
+        telemetry.addData("Propeller Target Position is ", propellerTargetPos);
         telemetry.addData("Current Runstate", rs);
-        alternatePropeller(on);
-        basicTel();
-        setToEncoderMode();
-        propellerSetToEncoderMode();
 
+        basicTel();
+        propellerSetToEncoderMode();
+        alternatePropeller(on);
+        setToEncoderMode();
 
         switch(rs) {
-            case RESET_STATE:
-            {
+            case RESET_STATE: {
                 setZipLinePosition(0);
+                dropClimber(false);
                 resetEncoders();
-                rs=RunState.FIRST_STATE;
+                rs = RunState.FIRST_STATE;
                 break;
             }
-            case FIRST_STATE:
-            {
+            case FIRST_STATE: {
                 on = true;
-                if(runStraight(-12, false) ){
+                if (runStraight(-12, false)) {
                     rs = RunState.FIRST_RESET;
                 }
                 break;
             }
             case FIRST_RESET: {
 
-                if(resetEncoders()){//make sure that the encoder have reset
+                if (resetEncoders()) {//make sure that the encoder have reset
                     rs = RunState.SECOND_STATE;
                 }
                 break;
             }
             case SECOND_STATE: {
-                if (setTargetValueTurn(80)){
+                if (setTargetValueTurn(-60)) {
                     rs = RunState.SECOND_RESET;
                 }
                 break;
             }
-            case SECOND_RESET:
-            {
-                if(resetEncoders()){//make sure that the encoder have reset
+            case SECOND_RESET: {
+                if (resetEncoders()) {//make sure that the encoder have reset
                     rs = RunState.THIRD_STATE;
                 }
                 break;
             }
-            case THIRD_STATE:
-            {
-                if (runStraight(-51, false)){
-                    rs= RunState.THIRD_RESET;
+            case THIRD_STATE: {
+                if (runStraight(-78, false)) {
+                    rs = RunState.THIRD_RESET;
                 }
                 break;
             }
             case THIRD_RESET:
             {
                 if (resetEncoders()){
-                    rs= RunState.FOURTH_STATE;
+                    rs = RunState.FOURTH_STATE;
                 }
                 break;
             }
-            case FOURTH_STATE: {
-                setZipLinePosition(-1);
-                if (setTargetValueTurn(140)){
-                    rs= RunState.FOURTH_RESET;
+            case FOURTH_STATE:
+            {
+                //330 worked for longer turn
+                if (setTargetValueTurnRight(210)){
+                    rs = RunState.FOURTH_RESET;
                 }
                 break;
             }
             case FOURTH_RESET:
             {
-                on = false;
-                setZipLinePosition(0);
                 if (resetEncoders()){
-                    rs= RunState.FIFTH_STATE;
+                    rs = RunState.FIFTH_STATE;
                 }
                 break;
             }
             case FIFTH_STATE:
             {
-                if (runStraight(-10, false)){
-                    rs= RunState.FIFTH_RESET;
+                on = false;
+                spinPropeller(0);
+                if (runStraight(3, false) || backBumper.isPressed()){
+                    rs = RunState.FIFTH_RESET;
                 }
                 break;
             }
             case FIFTH_RESET:
             {
                 if (resetEncoders()){
-                    rs= RunState.RESET_PROP;
-                }
-                break;
-            }
-            case RESET_PROP:
-            {
-                if (resetProp()){
-                    propeller.setPower(0);
-                    rs=RunState.SIXTH_STATE;
+                    rs = RunState.SIXTH_STATE;
                 }
                 break;
             }
             case SIXTH_STATE:
             {
-                propeller.setPower(0);
-                if (runStraight(-40, false)){
-                    rs= RunState.LAST_STATE;
+                if (backBumper.isPressed()) {
+                    dropClimber(true);
                 }
+                rs = RunState.LAST_STATE;
                 break;
             }
-            case LAST_STATE:
-            {
+
+            case LAST_STATE: {
                 stop();
             }
         }

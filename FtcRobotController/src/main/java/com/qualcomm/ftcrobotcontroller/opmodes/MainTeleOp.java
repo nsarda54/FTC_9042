@@ -9,23 +9,22 @@ public class MainTeleOp extends TeleOpHelper {
     @Override
     public void loop() {
         basicTel();
+        resetProp(reset);
+        driveControl(driveType);
 
         //DRIVER CONTROLS
         //driving
         if (gamepad1.right_bumper) {
-            manualDrive(true); //turtle mode
+            driveType = "slow";
         }
         else if (gamepad1.left_bumper){
-            backDrive();
+            driveType = "backwards";
         }
         else if (gamepad1.dpad_right && driveDropClimber(true)){
-            driveDropClimber(true);
-        }
-        else if (gamepad1.dpad_left){
-            driveDropClimber(false);
+            driveType = "climber";
         }
         else {
-            manualDrive(false);
+            driveType = "normal";
         }
 
         //constant driving
@@ -44,7 +43,7 @@ public class MainTeleOp extends TeleOpHelper {
             spinPropeller(-1);
         }
         else if (gamepad1.b) {
-            resetProp();
+            reset = true;
         }
         else {
             spinPropeller(0);
@@ -57,7 +56,6 @@ public class MainTeleOp extends TeleOpHelper {
         else if (gamepad1.dpad_down){
             dropClimber(false);
         }
-
 
         //OPERATOR CONTROLS
         //zipliners
@@ -92,7 +90,6 @@ public class MainTeleOp extends TeleOpHelper {
         }
         else {
             moveTubing(0);
-
         }
     }
 }
