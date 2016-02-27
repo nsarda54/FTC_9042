@@ -20,8 +20,5 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("Red Climbers", ShelterDumperRed.class);
         manager.register("Floor Goal", FloorZone.class);
         manager.register("Floor Goal (10 second Delay)", FloorZoneDelay.class);
-        manager.register("Rolatube", RollRolatubeIn.class);
-        manager.register("Reset Propeller Only", ResetPropFixer.class);
-
     }
 }
