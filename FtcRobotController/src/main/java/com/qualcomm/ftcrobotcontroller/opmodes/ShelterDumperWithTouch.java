@@ -69,7 +69,7 @@ public class ShelterDumperWithTouch extends AutonHelper{
                 break;
             }
             case SECOND_STATE: {
-                if (setTargetValueTurn(65)) {
+                if (setTargetValueTurn(60)) {
                     rs = RunState.SECOND_RESET;
                 }
                 break;
@@ -81,7 +81,7 @@ public class ShelterDumperWithTouch extends AutonHelper{
                 break;
             }
             case THIRD_STATE: {
-                if (runStraight(-80, false)) {
+                if (runStraight(-89, false)) {
                     rs = RunState.THIRD_RESET;
                 }
                 break;
@@ -96,7 +96,7 @@ public class ShelterDumperWithTouch extends AutonHelper{
             case FOURTH_STATE:
             {
                 //330 worked for longer turn
-                if (setTargetValueTurn(-190)){
+                if (setTargetValueTurn(-210)){
                     rs = RunState.FOURTH_RESET;
                 }
                 break;
@@ -112,7 +112,7 @@ public class ShelterDumperWithTouch extends AutonHelper{
             {
                 on = false;
                 spinPropeller(0);
-                if(runStraight(12, false) || backBumper.isPressed()){
+                if(runStraight(5, false) || backBumper.isPressed()){
                     rs = RunState.FIFTH_RESET;
                 }
                 break;

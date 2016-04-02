@@ -431,7 +431,6 @@ public class AutonHelper extends OpMode {
         setMotorPower(0, 0);//brake the movement of drive
         setZipLinePosition(0);
         spinPropeller(0);
-        dropClimber(false);
     }
 
 }
